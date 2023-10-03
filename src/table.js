@@ -49,10 +49,6 @@ class Table {
         }, this._getBlankTable())); 
     }
 
-    equals(B) {
-        return _.isEqual(this.data, B.data);
-    }
-
     _getBlankTable() {
         return this.columns.reduce((ret, col) => {
             ret[col] = [];
@@ -70,13 +66,3 @@ class Table {
 }
 
 module.exports = {Table};
-
-const A = {
-    name: ['John', 'Jane', 'Bob', 'Alice'],
-    age: [25, 30, 40, 35],
-    occupation: ['Software Engineer', 'Product Manager', 'Marketing Manager', 'Data Scientist']
-};
-tableA = new Table(A);
-tableA.filter(i => {
-    return tableA.data['name'][i] === 'John';
-});
