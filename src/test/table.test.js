@@ -135,4 +135,56 @@ describe('Table Class Unit Tests', () => {
             }).toThrow('Column does not exist');
         });
     });
+
+    describe('filter', () => {
+        it('should return only rows that satisfies conditions', () => {
+            const table = new Table(A);
+            expect(table.filter(i => {
+                return table.data['name'][i] === 'John';
+            })).toEqual(new Table({
+                name: ['John'],
+                age: [25],
+                occupation: ['Software Engineer']
+            }));
+            expect(table.filter(i => {
+                return table.data['name'][i] === 'John' && table.data['age'][i] == 30;
+            })).toEqual(new Table({
+                name: [],
+                age: [],
+                occupation: []
+            }));
+            expect(table.filter(i => {
+                return table.data['age'][i] > 25;
+            })).toEqual(new Table( {
+                name: ['Jane', 'Bob', 'Alice'],
+                age: [30, 40, 35],
+                occupation: ['Product Manager', 'Marketing Manager', 'Data Scientist']
+            }));
+            expect(table.filter(i => {
+                return table.data['age'][i] == 35 || table.data['age'][i] == 30
+            })).toEqual(new Table({
+                name: ['Jane', 'Alice'],
+                age: [30, 35],
+                occupation: ['Product Manager', 'Data Scientist']
+            }));
+        });
+        it('should return empty rows if no match', () => {
+            const table = new Table(A);
+            expect(table.filter(i => {
+                return table.data['name'][i] === 'John' && table.data['age'][i] == 30;
+            })).toEqual(new Table({
+                name: [],
+                age: [],
+                occupation: []
+            }));
+        });
+        it('should return full rows if specify no function', () => {
+            const table = new Table(A);
+            expect(table.filter()).toEqual(new Table({
+                name: ['John', 'Jane', 'Bob', 'Alice'],
+                age: [25, 30, 40, 35],
+                occupation: ['Software Engineer', 'Product Manager', 'Marketing Manager', 'Data Scientist']
+            }));
+        });
+    });
 });
