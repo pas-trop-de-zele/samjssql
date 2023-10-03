@@ -1,0 +1,15 @@
+{
+  "name": "samjssql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "samle",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "lodash": "^4.17.21"
+  }
+}
