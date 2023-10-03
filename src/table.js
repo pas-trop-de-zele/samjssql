@@ -18,8 +18,14 @@ class Table {
     }
 
     select(...cols) {
-        // # add col?
-        // # add row?
+        cols = cols.length > 0 ? cols : this.columns;
+        return cols.reduce((ret, col) => {
+            if (!this.data.hasOwnProperty(col)) {
+                throw new Error("Column does not exist");
+            }
+            ret[col] = this._deepclone(this.data[col]);
+            return ret;
+        }, {});
     }
 
     union(B) {
@@ -45,6 +51,9 @@ class Table {
         return _.isEqual(this._getBlankTable(), B._getBlankTable());
     }
 
+    _deepclone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
 }
 
 module.exports = {Table};

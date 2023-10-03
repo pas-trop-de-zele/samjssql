@@ -102,4 +102,37 @@ describe('Table Class Unit Tests', () => {
             expect(() => tableA.union(tableC)).toThrow('Schema mismatched');
         })
     });
+
+    describe('select', () => {
+        it('should return a new table with only the selected columns', () => {
+            const table = new Table(A);
+            expect(table.select('name', 'age')).toEqual({
+                name: ['John', 'Jane', 'Bob', 'Alice'],
+                age: [25, 30, 40, 35]
+            });
+            expect(table.select('name')).toEqual({
+                name: ['John', 'Jane', 'Bob', 'Alice'],
+            });
+            const emptyTable = new Table(C);
+            expect(emptyTable.select()).toEqual({});
+        });
+        it('should return every column if specify no column', () => {
+            const table = new Table(A);
+            expect(table.select()).toEqual({
+                name: ['John', 'Jane', 'Bob', 'Alice'],
+                age: [25, 30, 40, 35],
+                occupation: ['Software Engineer', 'Product Manager', 'Marketing Manager', 'Data Scientist']
+            });
+        });
+
+        it('should throw an error if a selected column does not exist', () => {
+            const table = new Table(A);
+            expect(() => {
+                table.select('name', 'salary');
+            }).toThrow('Column does not exist');
+            expect(() => {
+                table.select('salary');
+            }).toThrow('Column does not exist');
+        });
+    });
 });
