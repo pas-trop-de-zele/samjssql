@@ -21,28 +21,37 @@ const C = {}
 
 describe('Table Class Unit Tests', () => {
     describe('constructor', () => {
-        it('should create a table instance with object A', () => {
-            const table = new Table(A);
-            expect(table.columns).toEqual(['name', 'age', 'occupation']);
-            expect(table.colCount).toEqual(3);
-            expect(table.rowCount).toEqual(4);
-            expect(table.data).toEqual(A);
+        it('creates a table with correct column count', () => {
+            const tableA = new Table(A);
+            expect(tableA.colCount).toBe(3);
+
+            const tableB = new Table(B);
+            expect(tableB.colCount).toBe(2);
+
+            const tableC = new Table(C);
+            expect(tableC.colCount).toBe(0);
         });
 
-        it('should create a table instance with object B', () => {
-            const table = new Table(B);
-            expect(table.columns).toEqual(['age', 'salary']);
-            expect(table.colCount).toEqual(2);
-            expect(table.rowCount).toEqual(4);
-            expect(table.data).toEqual(B);
+        it('creates a table with correct column names', () => {
+            const tableA = new Table(A);
+            expect(tableA.columns).toEqual(['name', 'age', 'occupation']);
+
+            const tableB = new Table(B);
+            expect(tableB.columns).toEqual(['age', 'salary']);
+
+            const tableC = new Table(C);
+            expect(tableC.columns).toEqual([]);
         });
 
-        it('should create a table instance with object C', () => {
-            const table = new Table(C);
-            expect(table.columns).toEqual([]);
-            expect(table.colCount).toEqual(0);
-            expect(table.rowCount).toEqual(0);
-            expect(table.data).toEqual(C);
+        it('creates a table with correct row count', () => {
+            const tableA = new Table(A);
+            expect(tableA.rowCount).toBe(4);
+
+            const tableB = new Table(B);
+            expect(tableB.rowCount).toBe(4);
+
+            const tableC = new Table(C);
+            expect(tableC.rowCount).toBe(0);
         });
     });
 

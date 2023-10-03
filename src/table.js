@@ -3,24 +3,23 @@ let _ = require("lodash")
 class Table {
     constructor(A) {
         this.data = A;
-        this.columns = Object.keys(A);
-        this.colCount = Object.keys(A).length;
-        this.rowCount = this.colCount > 0 ? A[this.columns[0]].length : 0;
     }
 
-    _getBlankTable() {
-        return this.columns.reduce((ret, col) => {
-            ret[col] = [];
-            return ret;
-        }, {});
+    get colCount() {
+        return this.columns.length;
+    }
+    
+    get rowCount() {
+        return this.colCount > 0 ? this.data[this.columns[0]].length : 0;
     }
 
-    _equalSchema(B) {
-        return _.isEqual(this._getBlankTable(), B._getBlankTable());
+    get columns() {
+        return Object.keys(this.data);
     }
 
     select(...cols) {
-        
+        // # add col?
+        // # add row?
     }
 
     union(B) {
@@ -33,6 +32,17 @@ class Table {
             ret[col].push(...B.data[col]);
         } 
         return ret; 
+    }
+
+    _getBlankTable() {
+        return this.columns.reduce((ret, col) => {
+            ret[col] = [];
+            return ret;
+        }, {});
+    }
+
+    _equalSchema(B) {
+        return _.isEqual(this._getBlankTable(), B._getBlankTable());
     }
 
 }
