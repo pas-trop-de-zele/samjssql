@@ -1,4 +1,4 @@
-const Table = require('../table').Table;
+const { Table } = require('../table');
 
 const A = {
     name: ['John', 'Jane', 'Bob', 'Alice'],
@@ -141,20 +141,17 @@ describe('Table Class Unit Tests', () => {
                 'Bob': {salary: [30000]}
             });
         });
-        it('should have no rows if all columns are selected', () => {
-            const tableD = new Table(D);
-            expect(tableD._groupRowsByCols(['name', 'age', 'occupation', 'salary'],[])).toEqual({
-                'John_|_25_|_Software Engineer_|_10000' : {},
-                'John_|_30_|_Product Manager_|_20000' : {},
-                'Bob_|_30_|_Software Engineer_|_30000' : {},
-                'John_|_25_|_Data Scientist_|_40000' : {}
-            });
-        });
         it('should throw an error if specify no group by columns', () => {
             const tableD = new Table(D);
             expect(() => {
                 tableD._groupRowsByCols([],[]);
-            }).toThrow('Need at least 1 column for grouping');
+            }).toThrow('Need at least 1 group by column');
+        });
+        it('should throw and error if specify no aggregate column', () => {
+            const tableD = new Table(D);
+            expect(() => {
+                tableD._groupRowsByCols(['name', 'age', 'occupation', 'salary'],[]);
+            }).toThrow('Need at least 1 aggregate column');
         });
     });
 

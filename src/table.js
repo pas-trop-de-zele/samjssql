@@ -51,8 +51,13 @@ class Table {
 
     _groupRowsByCols(groupByCols, aggrCols) {
         if (groupByCols.length === 0) {
-            throw new Error("Need at least 1 column for grouping");
+            throw new Error("Need at least 1 group by column");
         }
+        
+        if (aggrCols.length === 0) {
+            throw new Error("Need at least 1 aggregate column");
+        }
+        
         let group = {};
         for (let row = 0; row < this.rowCount; ++row) {
             const colValsCombined = groupByCols.map(col => this.data[col][row]).join('_|_');
@@ -83,3 +88,4 @@ class Table {
     }
 }
 
+module.exports = { Table };
