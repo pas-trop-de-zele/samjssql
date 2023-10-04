@@ -140,6 +140,11 @@ describe('Table Class Unit Tests', () => {
                 'John': {salary: [10000, 20000, 40000]},
                 'Bob': {salary: [30000]}
             });
+            expect(tableD._groupRowsByCols(['name', 'age'], ['salary'])).toEqual({
+                'John_|_25' : {salary: [10000, 40000]},
+                'John_|_30' : {salary: [20000]},
+                'Bob_|_30' : {salary: [30000]},
+            });
         });
         it('should throw an error if specify no group by columns', () => {
             const tableD = new Table(D);
