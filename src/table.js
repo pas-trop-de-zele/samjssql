@@ -49,23 +49,23 @@ class Table {
         }, this._getBlankTable())); 
     }
 
-    _groupRowsByCols(groupByCols, aggrCols) {
+    _groupRowsByCols(groupByCols, remainingCols) {
         if (groupByCols.length === 0) {
             throw new Error("Need at least 1 group by column");
         }
         
-        if (aggrCols.length === 0) {
+        if (remainingCols.length === 0) {
             throw new Error("Need at least 1 aggregate column");
         }
         
         let group = {};
         for (let row = 0; row < this.rowCount; ++row) {
             const colValsCombined = groupByCols.map(col => this.data[col][row]).join('_|_');
-            if (!group.hasOwnProperty(colValsCombined)) group[colValsCombined] = aggrCols.reduce((ret, col) => {
+            if (!group.hasOwnProperty(colValsCombined)) group[colValsCombined] = remainingCols.reduce((ret, col) => {
                 ret[col] = [];
                 return ret;
             }, {});
-            aggrCols.forEach(col => {
+            remainingCols.forEach(col => {
                 group[colValsCombined][col].push(this.data[col][row]);
             });
         }
