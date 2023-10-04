@@ -19,6 +19,13 @@ const B = {
 
 const C = {}
 
+const D = {
+    name: ['John', 'John', 'Bob', 'John'],
+    age: [25, 30, 30, 25],
+    occupation: ['Software Engineer', 'Product Manager', 'Software Engineer', 'Data Scientist'],
+    salary: [10000, 20000, 30000, 40000]
+}
+
 describe('Table Class Unit Tests', () => {
     describe('constructor', () => {
         it('creates a table with correct column count', () => {
@@ -96,11 +103,59 @@ describe('Table Class Unit Tests', () => {
             const tableA = new Table(A);
             const tableB = new Table(B);
             const tableC = new Table(C);
-            // expect(tableA.union(tableB)).toThrowError();
             expect(() => tableA.union(tableB)).toThrow('Schema mismatched');
             expect(() => tableB.union(tableC)).toThrow('Schema mismatched');
             expect(() => tableA.union(tableC)).toThrow('Schema mismatched');
         })
+    });
+
+    describe('_groupRowsByCols', () => {
+        it('should group rows by group by cols', () => {
+            const tableD = new Table(D);
+            expect(tableD._groupRowsByCols(['name'],['age', 'occupation', 'salary'])).toEqual({
+                'John': {age: [25, 30, 25], occupation: ['Software Engineer', 'Product Manager', 'Data Scientist'], salary: [10000, 20000, 40000]},
+                'Bob': {age: [30], occupation: ['Software Engineer'], salary: [30000]},
+            });
+            expect(tableD._groupRowsByCols(['name', 'age'],['occupation', 'salary'])).toEqual({
+                'John_|_25' : {occupation: ['Software Engineer', 'Data Scientist'], salary: [10000, 40000]},
+                'John_|_30' : {occupation: ['Product Manager'], salary: [20000]},
+                'Bob_|_30' : {occupation: ['Software Engineer'], salary: [30000]},
+            });
+            expect(tableD._groupRowsByCols(['name', 'age', 'occupation'],['salary'])).toEqual({
+                'John_|_25_|_Software Engineer' : {salary: [10000]},
+                'John_|_30_|_Product Manager' : {salary: [20000]},
+                'Bob_|_30_|_Software Engineer' : {salary: [30000]},
+                'John_|_25_|_Data Scientist' : {salary: [40000]}
+            });
+            expect(tableD._groupRowsByCols(['name', 'age', 'occupation'],['salary'])).toEqual({
+                'John_|_25_|_Software Engineer' : {salary: [10000]},
+                'John_|_30_|_Product Manager' : {salary: [20000]},
+                'Bob_|_30_|_Software Engineer' : {salary: [30000]},
+                'John_|_25_|_Data Scientist' : {salary: [40000]}
+            });
+        });
+        it('should work fine when not all columns are selected', () => {
+            const tableD = new Table(D);
+            expect(tableD._groupRowsByCols(['name'],['salary'])).toEqual({
+                'John': {salary: [10000, 20000, 40000]},
+                'Bob': {salary: [30000]}
+            });
+        });
+        it('should have no rows if all columns are selected', () => {
+            const tableD = new Table(D);
+            expect(tableD._groupRowsByCols(['name', 'age', 'occupation', 'salary'],[])).toEqual({
+                'John_|_25_|_Software Engineer_|_10000' : {},
+                'John_|_30_|_Product Manager_|_20000' : {},
+                'Bob_|_30_|_Software Engineer_|_30000' : {},
+                'John_|_25_|_Data Scientist_|_40000' : {}
+            });
+        });
+        it('should throw an error if specify no group by columns', () => {
+            const tableD = new Table(D);
+            expect(() => {
+                tableD._groupRowsByCols([],[]);
+            }).toThrow('Need at least 1 column for grouping');
+        });
     });
 
     describe('select', () => {
