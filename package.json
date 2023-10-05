@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test table": "npm test -- src/test/table.test.js",
+    "test aggregate": "npm test -- src/test/aggregation.test.js"
   },
   "author": "samle",
   "license": "ISC",

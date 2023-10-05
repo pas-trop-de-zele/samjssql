@@ -1,5 +1,4 @@
-const { Aggregation } = require('../aggregation');
-const { Table } = require('../table');
+const { Table, Aggregation } = require('../table');
 const _ = require("lodash");
 
 
@@ -36,6 +35,30 @@ describe('Aggregation Class Unit Tests', () => {
             expect(Aggregation._revertTypeFromString('0', 'string')).toEqual('0');
             expect(Aggregation._revertTypeFromString('true', 'string')).toEqual('true');
             expect(Aggregation._revertTypeFromString('true', 'boolean')).toEqual(true);
+        });
+        it('should return null if val is #####', () => {
+            expect(Aggregation._revertTypeFromString('#####', 'string')).toEqual(null);
+            expect(Aggregation._revertTypeFromString('#####', 'number')).toEqual(null);
+            expect(Aggregation._revertTypeFromString('#####', 'boolean')).toEqual(null);
+        });
+    });
+
+    describe('group by col with null values should decode correctly', () => {
+        it('should translate ##### to null accurately', () => {
+            groupByCols = ['name', 'age']
+            groupbyColsTypes = ['string', 'number']
+            remainingCols = ['salary']
+            rowsByColumnMap = {
+                'John_|_25' : {salary: [100, 200, 300]},
+                'John_|_#####' : {salary: [400, 500, 600]},
+                'Bob_|_#####' : {salary: [700]},
+            }
+            const A = new Aggregation(groupByCols, groupbyColsTypes, remainingCols, rowsByColumnMap);
+            expect(A.sum('salary')).toEqual(new Table({
+                'name': ['John', 'John', 'Bob'],
+                'age': [25, null, null],
+                'sum(salary)': [600, 1500, 700],
+            }));
         });
     });
 
