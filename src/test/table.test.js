@@ -302,58 +302,58 @@ describe('Table Class Unit Tests', () => {
         it('should sort by string col correctly', () => {
             expect(table.asc('name')).toEqual(new Table({
                 name: [
-                    'a',  'c',  'f',
-                    'g',  'h',  'h',
+                    'a', 'c', 'f',
+                    'g', 'h', 'h',
                     null, null, null
-                  ],
-                  age: [
-                    5,    1,    10, 6,
-                    null, null, 9,  20,
+                ],
+                age: [
+                    5, 1, 10, 6,
+                    null, null, 9, 20,
                     0
-                  ],
-                  good: [
-                    null, true,  false,
+                ],
+                good: [
+                    null, true, false,
                     null, false, null,
-                    true, true,  false
-                  ]
+                    true, true, false
+                ]
             }));
         });
         it('should sort by numeric col correctly', () => {
             expect(table.asc('age')).toEqual(new Table({
                 name: [
-                    null, 'c',  'a',
-                    'g',  null, 'f',
-                    null, 'h',  'h'
-                  ],
-                  age: [
-                    0,    1,  5,  6,
-                    9,    10, 20, null,
+                    null, 'c', 'a',
+                    'g', null, 'f',
+                    null, 'h', 'h'
+                ],
+                age: [
+                    0, 1, 5, 6,
+                    9, 10, 20, null,
                     null
-                  ],
-                  good: [
-                    false, true,  null,
-                    null,  true,  false,
-                    true,  false, null
-                  ]
+                ],
+                good: [
+                    false, true, null,
+                    null, true, false,
+                    true, false, null
+                ]
             }));
         });
         it('should sort by boolean col correctly', () => {
             expect(table.asc('good')).toEqual(new Table({
                 name: [
-                    'h', 'f',  null,
+                    'h', 'f', null,
                     'c', null, null,
-                    'a', 'g',  'h'
-                  ],
-                  age: [
+                    'a', 'g', 'h'
+                ],
+                age: [
                     null, 10, 0, 1,
-                    9,    20, 5, 6,
+                    9, 20, 5, 6,
                     null
-                  ],
-                  good: [
+                ],
+                good: [
                     false, false, false,
-                    true,  true,  true,
-                    null,  null,  null
-                  ]
+                    true, true, true,
+                    null, null, null
+                ]
             }));
         });
         // it('should sort by multiple cols correctly', () => {
@@ -378,57 +378,57 @@ describe('Table Class Unit Tests', () => {
             expect(table.desc('name')).toEqual(new Table({
                 name: [
                     null, null, null,
-                    'h',  'h',  'g',
-                    'f',  'c',  'a'
-                  ],
-                  age: [
-                    9,    20, 0,  null,
-                    null, 6,  10, 1,
+                    'h', 'h', 'g',
+                    'f', 'c', 'a'
+                ],
+                age: [
+                    9, 20, 0, null,
+                    null, 6, 10, 1,
                     5
-                  ],
-                  good: [
-                    true,  true, false,
+                ],
+                good: [
+                    true, true, false,
                     false, null, null,
                     false, true, null
-                  ]
+                ]
             }));
         });
         it('should sort by numeric col correctly', () => {
             expect(table.desc('age')).toEqual(new Table({
                 name: [
-                    'h', 'h',  null,
+                    'h', 'h', null,
                     'f', null, 'g',
-                    'a', 'c',  null
-                  ],
-                  age: [
+                    'a', 'c', null
+                ],
+                age: [
                     null, null, 20, 10,
-                    9,    6,    5,  1,
+                    9, 6, 5, 1,
                     0
-                  ],
-                  good: [
+                ],
+                good: [
                     false, null, true,
                     false, true, null,
-                    null,  true, false
-                  ]
+                    null, true, false
+                ]
             }));
         });
         it('should sort by boolean col correctly', () => {
             expect(table.desc('good')).toEqual(new Table({
                 name: [
-                    'a', 'g',  'h',
+                    'a', 'g', 'h',
                     'c', null, null,
-                    'h', 'f',  null
-                  ],
-                  age: [
-                    5, 6,  null, 1,
+                    'h', 'f', null
+                ],
+                age: [
+                    5, 6, null, 1,
                     9, 20, null, 10,
                     0
-                  ],
-                  good: [
-                    null,  null,  null,
-                    true,  true,  true,
+                ],
+                good: [
+                    null, null, null,
+                    true, true, true,
                     false, false, false
-                  ]
+                ]
             }));
         });
     })
@@ -485,9 +485,9 @@ describe('Table Class Unit Tests', () => {
     describe('groupby with null', () => {
         it('should sum and order by salary', () => {
             expect(new Table({
-                name:   ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
-                age:    [null   , 25    , 25    , null  , 30    , 30    , 30],
-                salary: [100    , 200   , 300   , 400   , 500   , 600   , 700]
+                name: ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
+                age: [null, 25, 25, null, 30, 30, 30],
+                salary: [100, 200, 300, 400, 500, 600, 700]
             }).groupby('name', 'age').sum('salary').asc('sum(salary)')).toEqual(new Table({
                 'name': ['John', 'John', 'Bob', 'John'],
                 'age': [null, 25, 30, 30],
@@ -496,12 +496,130 @@ describe('Table Class Unit Tests', () => {
         });
         it('should sum and order by name', () => {
             expect(new Table({
-                name:   ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
-                age:    [null   , 25    , 25    , null  , 30    , 30    , 30],
-                salary: [100    , 200   , 300   , 400   , 500   , 600   , 700]
+                name: ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
+                age: [null, 25, 25, null, 30, 30, 30],
+                salary: [100, 200, 300, 400, 500, 600, 700]
             }).groupby('name').sum('salary').asc('name')).toEqual(new Table({
                 'name': ['Bob', 'John'],
                 'sum(salary)': [700, 2100]
+            }));
+        });
+    })
+
+    describe('should throw error when non existent column specified', () => {
+        const A = new Table({
+            name: ['a', 'a', 'b', 'c'],
+            age: [1, 2, 3, 4]
+        })
+        const B = new Table({
+            age: [1, 2, 3, 4],
+            salary: [5, 6, 7, 8]
+        })
+
+        it('should throw error when col does not exist on left side', () => {
+            expect(() => {
+                A.leftJoin(B, 'salary');
+            }).toThrow("Col salary does not exist on either or both side")
+        });
+        it('should throw error when col does not exist on right side', () => {
+            expect(() => {
+                A.leftJoin(B, 'name');
+            }).toThrow("Col name does not exist on either or both side")
+        });
+    })
+
+    describe('leftJoin', () => {
+        it('should match all cols', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [1, 2, 3, 4],
+                salary: [5, 6, 7, 8]
+            })
+            expect(A.leftJoin(B, 'age')).toEqual(new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4],
+                salary: [5, 6, 7, 8]
+            }));
+        });
+        it('should keep null rows', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [1, 2, 5, 5],
+                salary: [5, 6, 7, 8]
+            })
+            expect(A.leftJoin(B, 'age')).toEqual(new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4],
+                salary: [5, 6, null, null]
+            }));
+        });
+        it('should keep null rows when nothing matches', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [5,5,5,5],
+                salary: [5, 6, 7, 8]
+            })
+            expect(A.leftJoin(B, 'age')).toEqual(new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4],
+                salary: [null, null, null, null]
+            }));
+        });
+    })
+
+    describe('inner', () => {
+        it('should match all cols', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [1, 2, 3, 4],
+                salary: [5, 6, 7, 8]
+            })
+            expect(A.innerJoin(B, 'age')).toEqual(new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4],
+                salary: [5, 6, 7, 8]
+            }));
+        });
+        it('should not keep null rows', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [1, 2, 5, 5],
+                salary: [5, 6, 7, 8]
+            })
+            expect(A.innerJoin(B, 'age')).toEqual(new Table({
+                name: ['a', 'a'],
+                age: [1, 2],
+                salary: [5, 6]
+            }));
+        });
+        it('should be empty when nothing matches', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [5,5,5,5],
+                salary: [5, 6, 7, 8]
+            })
+            expect(A.innerJoin(B, 'age')).toEqual(new Table({
+                name: [],
+                age: [],
+                salary: []
             }));
         });
     })

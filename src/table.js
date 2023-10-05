@@ -5,6 +5,11 @@ const constants = {
     COLUMNSEP: '_|_',
 }
 
+const joinType = {
+    INNER: 'inner',
+    LEFT: 'left'
+}
+
 class Table {
     constructor(A) {
         this.data = A;
@@ -25,7 +30,7 @@ class Table {
     select(...cols) {
         cols = cols.length > 0 ? cols : this.columns;
         return new Table(cols.reduce((ret, col) => {
-            if (!this.data.hasOwnProperty(col)) {
+            if (!this._hasCol(col)) {
                 throw new Error("Column does not exist");
             }
             ret[col] = this._deepclone(this.data[col]);
@@ -44,9 +49,8 @@ class Table {
     }
 
     groupby(...groupByCols) {
-        const groupByColsSet = new Set(groupByCols)
+        const remainingCols = this._getRemainingCols(groupByCols);
         const groupbyColsTypes = groupByCols.map(col => this._getColType(col));
-        const remainingCols = this.columns.filter(x => !groupByColsSet.has(x));
         return new Aggregation(groupByCols, groupbyColsTypes, remainingCols, this._groupRowsByCols(groupByCols, remainingCols));
     }
 
@@ -67,6 +71,51 @@ class Table {
             ret[col].push(...B.data[col]);
             return ret;
         }, this._getBlankTable())); 
+    }
+
+    leftJoin(B, joinCol) {
+        return this._join(B, joinCol, joinType.LEFT)
+    }
+
+    innerJoin(B, joinCol) {
+        return this._join(B, joinCol, joinType.INNER)
+    }
+
+    _join(B, joinCol, joinCategory) {
+        if (!this._hasCol(joinCol) || !B._hasCol(joinCol)) {
+            throw new Error(`Col ${joinCol} does not exist on either or both side`)
+        }
+
+        let Bmap = B._groupRowsByCols([joinCol], B._getRemainingCols(joinCol));
+        let translatedCol = {}
+        let ret = this._getBlankTable();
+        for (let col of B.columns) {
+            const distinctName = this._hasCol(col) ?  `_${col}` : col;
+            translatedCol[col] = distinctName;
+            if (col === joinCol) continue // skip joinning column from B
+            ret[distinctName] = []
+        }
+        for (let rowA = 0; rowA < this.rowCount; ++rowA) {
+            let joinVal = this.data[joinCol][rowA];
+            const Bside = Bmap[joinVal];
+            if (Bside === undefined) {
+                if (joinCategory === joinType.INNER) continue;
+                for (let col of this.columns) ret[col].push(this.data[col][rowA]);
+                for (let col of B.columns.filter(col => col !== joinCol)) {
+                    ret[translatedCol[col]].push(null);
+                }
+            } else {
+                let BsideRowCount = Bside[Object.keys(Bside)[0]].length;
+                for (let rowB = 0; rowB < BsideRowCount; ++rowB) {
+                    for (let col of this.columns) ret[col].push(this.data[col][rowA]);
+                    for (let col of B.columns.filter(col => col !== joinCol)) {
+                        if (col === joinCol) continue;
+                        ret[translatedCol[col]].push(Bside[col][rowB]);
+                    } 
+                }
+            }
+        }
+        return new Table(ret);
     }
 
     _sort(sortCol, ascending) {
@@ -155,6 +204,15 @@ class Table {
 
     _getGroupbyKey(groupByCols, row) {
         return groupByCols.map(col => this.data[col][row] ?? constants.NULLENCODE).join(constants.COLUMNSEP)
+    }
+
+    _hasCol(col) {
+        return this.data.hasOwnProperty(col);
+    }
+
+    _getRemainingCols(selectedCols) {
+        const selectedColsSet = new Set(selectedCols)
+        return this.columns.filter(x => !selectedColsSet.has(x));
     }
 }
 
