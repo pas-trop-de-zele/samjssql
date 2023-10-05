@@ -37,13 +37,13 @@ describe('Table Class Unit Tests', () => {
     describe('constructor', () => {
         it('creates a table with correct column count', () => {
             const tableA = new Table(A);
-            expect(tableA.colCount).toBe(3);
+            expect(tableA.colCount).toEqual(3);
 
             const tableB = new Table(B);
-            expect(tableB.colCount).toBe(2);
+            expect(tableB.colCount).toEqual(2);
 
             const tableC = new Table(C);
-            expect(tableC.colCount).toBe(0);
+            expect(tableC.colCount).toEqual(0);
         });
 
         it('creates a table with correct column names', () => {
