@@ -81,6 +81,19 @@ class Table {
         return this._join(B, joinCol, joinType.INNER)
     }
 
+    limit(rowLim) {
+        if (rowLim < 0) {
+            throw new Error("Row count cannot be lower than 0");
+        }
+        let ret = this._getBlankTable();
+        for (let i = 0; i < Math.min(rowLim, this.rowCount); ++i) {
+            this.columns.forEach(col => {
+                ret[col].push(this.data[col][i]);
+            })
+        }
+        return new Table(ret);
+    }
+
     _join(B, joinCol, joinCategory) {
         if (!this._hasCol(joinCol) || !B._hasCol(joinCol)) {
             throw new Error(`Col ${joinCol} does not exist on either or both side`)

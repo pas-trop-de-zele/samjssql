@@ -623,4 +623,24 @@ describe('Table Class Unit Tests', () => {
             }));
         });
     })
+
+    describe('limit', () => {
+        const A = new Table({
+            name: ['a', 'a', 'b', 'c'],
+            age: [1, 2, 3, 4]
+        })
+        it('should limit to correct row cont', () => {
+            expect(A.limit(2)).toEqual(new Table({
+                name: ['a', 'a'],
+                age: [1, 2]
+            }));
+            expect(A.limit(0)).toEqual(new Table({
+                name: [],
+                age: []
+            }));
+        });
+        it('should throw error if specify below 0', () => {
+            expect(() => {A.limit(-1);}).toThrow("Row count cannot be lower than 0");
+        });
+    })
 });
