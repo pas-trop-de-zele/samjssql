@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "test table": "npm test -- src/test/table.test.js",
-    "test aggregate": "npm test -- src/test/aggregation.test.js"
+    "test:table": "npm test -- src/test/table.test.js",
+    "test:aggregate": "npm test -- src/test/aggregation.test.js",
+    "test:f_table": "npm test -- src/test/f_table.test.js",
+    "test:f_aggregate": "npm test -- src/test/f_aggregation.test.js"
   },
   "author": "samle",
   "license": "ISC",
