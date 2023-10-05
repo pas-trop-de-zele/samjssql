@@ -356,7 +356,17 @@ describe('Table Class Unit Tests', () => {
                   ]
             }));
         });
+        // it('should sort by multiple cols correctly', () => {
+        //     expect(new Table({
+        //         name: ['b', 'c', 'c', 'a'],
+        //         salary: [1, 3, 2, 4]                    
+        //     }).asc('name').desc('salary')).toEqual(new Table({
+        //         name:  ['a','b', 'c', 'c'],
+        //         salary: [4  ,1  , 3  , 2]                    
+        //     }));
+        // });
     })
+
     describe('desc', () => {
         const table = new Table({
             'name': ['c', null, 'a', 'h', null, 'f', 'g', null, 'h'],
@@ -472,25 +482,27 @@ describe('Table Class Unit Tests', () => {
             }));
         });
     })
-
-    // describe('groupby with null', () => {
-    //     // Checking to make sure the group by null values are preserved
-    //     expect(new Table({
-    //         name:   ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
-    //         age:    [null   , 25    , 25    , null  , 30    , 30    , 30],
-    //         salary: [100    , 200   , 300   , 400   , 500   , 600   , 700]
-    //     }).groupby('name', 'age').sum('salary')).toEqual(new Table({
-    //         'name': ['John', 'John', 'John', 'Bob'],
-    //         'age': [null, 25, 30, 30],
-    //         'sum(salary)': [500, 500, 1100, 700]
-    //     }));
-    //     expect(new Table({
-    //         name:   ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
-    //         age:    [null   , 25    , 25    , null  , 30    , 30    , 30],
-    //         salary: [100    , 200   , 300   , 400   , 500   , 600   , 700]
-    //     }).groupby('age').sum('salary')).toEqual(new Table({
-    //         'age': [null, 25, 30],
-    //         'sum(salary)': [500, 500, 1800]
-    //     }));
-    // })
+    describe('groupby with null', () => {
+        it('should sum and order by salary', () => {
+            expect(new Table({
+                name:   ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
+                age:    [null   , 25    , 25    , null  , 30    , 30    , 30],
+                salary: [100    , 200   , 300   , 400   , 500   , 600   , 700]
+            }).groupby('name', 'age').sum('salary').asc('sum(salary)')).toEqual(new Table({
+                'name': ['John', 'John', 'Bob', 'John'],
+                'age': [null, 25, 30, 30],
+                'sum(salary)': [500, 500, 700, 1100]
+            }));
+        });
+        it('should sum and order by name', () => {
+            expect(new Table({
+                name:   ['John', 'John', 'John', 'John', 'John', 'John', 'Bob'],
+                age:    [null   , 25    , 25    , null  , 30    , 30    , 30],
+                salary: [100    , 200   , 300   , 400   , 500   , 600   , 700]
+            }).groupby('name').sum('salary').asc('name')).toEqual(new Table({
+                'name': ['Bob', 'John'],
+                'sum(salary)': [700, 2100]
+            }));
+        });
+    })
 });
