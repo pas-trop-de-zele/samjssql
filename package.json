@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "testPathIgnorePatterns": ["src/archive"]
+  },
   "scripts": {
     "test": "jest",
     "test:table": "npm test -- src/test/table.test.js",
