@@ -10,6 +10,10 @@ const joinType = {
     LEFT: 'left'
 }
 
+const errorMessage = {
+    MISSING_JOIN_COLUMN: 'Missing joining column',
+}
+
 class Table {
     constructor(A) {
         this.data = A;
@@ -95,6 +99,9 @@ class Table {
     }
 
     _join(B, joinCol, joinCategory) {
+        if (joinCol === undefined) {
+            throw new Error(errorMessage.MISSING_JOIN_COLUMN);
+        }
         if (!this._hasCol(joinCol) || !B._hasCol(joinCol)) {
             throw new Error(`Col ${joinCol} does not exist on either or both side`)
         }
@@ -331,4 +338,4 @@ class Aggregation {
     }
 }
 
-module.exports = {Table, Aggregation, constants};
+module.exports = {Table, Aggregation, constants, errorMessage};

@@ -1,4 +1,4 @@
-const { Table, Aggregation, constants } = require('../table');
+const { Table, constants, errorMessage } = require('../table');
 
 const A = {
     name: ['John', 'Jane', 'Bob', 'Alice'],
@@ -574,6 +574,19 @@ describe('Table Class Unit Tests', () => {
                 salary: [null, null, null, null]
             }));
         });
+        it('should throw error when no join column specify', () => {
+            const A = new Table({
+                name: ['a', 'a', 'b', 'c'],
+                age: [1, 2, 3, 4]
+            })
+            const B = new Table({
+                age: [5,5,5,5],
+                salary: [5, 6, 7, 8]
+            })
+            expect(() => {
+                A.leftJoin(B);
+            }).toThrow(errorMessage.MISSING_JOIN_COLUMN);
+        })
     })
 
     describe('inner', () => {
