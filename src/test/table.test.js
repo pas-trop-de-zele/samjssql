@@ -656,4 +656,29 @@ describe('Table Class Unit Tests', () => {
             expect(() => {A.limit(-1);}).toThrow("Row count cannot be lower than 0");
         });
     })
+
+    describe('explode', () => {
+        it('should explode correctly', () => {
+            expect(new Table({
+                col1: ['a','b', 'c'],
+                col2: ['c','d','e'],
+                col3: [[1,2,3], [4,5,6], [7,8,9]]
+            }).explode('col3')).toEqual(new Table({
+                col1:['a','a','a','b','b','b','c','c','c'],
+                col2:['c','c','c','d','d','d','e','e','e'],
+                col3:[1,2,3,4,5,6,7,8,9]
+            }))
+        });
+        it('should keep null when explode', () => {
+            expect(new Table({
+                col1: ['a','b', 'c'],
+                col2: ['c','d','e'],
+                col3: [[1,null,3], [null,5,6], [7,8,null]]
+            }).explode('col3')).toEqual(new Table({
+                col1:['a','a','a','b','b','b','c','c','c'],
+                col2:['c','c','c','d','d','d','e','e','e'],
+                col3:[1,null,3,null,5,6,7,8,null]
+            }))
+        });
+    })
 });

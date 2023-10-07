@@ -12,6 +12,7 @@ const joinType = {
 
 const errorMessage = {
     MISSING_JOIN_COLUMN: 'Missing joining column',
+    EXPLODE_NOT_ARRAY: 'Cannot explode non array column'
 }
 
 class Table {
@@ -94,6 +95,22 @@ class Table {
             this.columns.forEach(col => {
                 ret[col].push(this.data[col][i]);
             })
+        }
+        return new Table(ret);
+    }
+    
+    explode(explodeCol) {
+        if (!Array.isArray(this.data[explodeCol])) {
+            throw new Error(errorMessage.EXPLODE_NOT_ARRAY);
+        }
+        let ret = this._getBlankTable();
+        for (let i = 0; i < this.rowCount; ++i) {
+            for (let j = 0; j < this.data[explodeCol].length; ++j) {
+                for (let col of this._getRemainingCols([explodeCol])) {
+                    ret[col].push(this.data[col][i]);
+                }
+                ret[explodeCol].push(this.data[explodeCol][i][j]);
+            }
         }
         return new Table(ret);
     }
