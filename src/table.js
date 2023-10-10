@@ -12,7 +12,8 @@ const joinType = {
 
 const errorMessage = {
     MISSING_JOIN_COLUMN: 'Missing joining column',
-    EXPLODE_NOT_ARRAY: 'Cannot explode non array column'
+    EXPLODE_NOT_ARRAY: 'Cannot explode non array column',
+    COL_NOT_EXIST: 'Column does not exist'
 }
 
 class Table {
@@ -76,6 +77,17 @@ class Table {
             ret[col].push(...B.data[col]);
             return ret;
         }, this._getBlankTable())); 
+    }
+
+    drop(...cols) {
+        let ret = this._deepclone(this.data);
+        for (let col of cols) {
+            if (!ret.hasOwnProperty(col)) {
+                throw new Error(errorMessage.COL_NOT_EXIST)
+            }
+            delete ret[col];
+        }
+        return new Table(ret);
     }
 
     leftJoin(B, joinCol) {

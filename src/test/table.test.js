@@ -206,6 +206,29 @@ describe('Table Class Unit Tests', () => {
         })
     });
 
+    describe('drop', () => {
+        it('should drop one column', () => {
+            const tableA = new Table(A);
+            expect(tableA.drop('name')).toEqual(new Table({
+                age: [25, 30, 40, 35],
+                occupation: ['Software Engineer', 'Product Manager', 'Marketing Manager', 'Data Scientist']
+            }));
+        });
+        it('should drop multiple column', () => {
+            const tableA = new Table(A);
+            expect(tableA.drop('name', 'age')).toEqual(new Table({
+                occupation: ['Software Engineer', 'Product Manager', 'Marketing Manager', 'Data Scientist']
+            }));
+        });
+        it('should return empty if drop all columns', () => {
+            const tableA = new Table(A);
+            expect(tableA.drop('name', 'age', 'occupation')).toEqual(new Table({}));
+        });
+        it('should throw error when there is a schema mismatch', () => {
+            const tableA = new Table(A);
+            expect(() => tableA.drop("non_existent_col")).toThrow(errorMessage.COL_NOT_EXIST);
+        })
+    });
 
     describe('select', () => {
         it('should return a new table with only the selected columns', () => {
