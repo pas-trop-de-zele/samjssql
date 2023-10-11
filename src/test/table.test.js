@@ -315,6 +315,43 @@ describe('Table Class Unit Tests', () => {
         });
     });
 
+    describe('addCol', () => {
+        const table = new Table({
+            col1: ['a','b','c','d'],
+            col2: ['e','f','g','h'],
+            col3: [1,2,3,4],
+            col4: [5,6,7,8]
+        });
+        it ("should string concat properly", () => {
+            expect(table.addCol('col5', i => {
+                return table.data['col1'][i] + table.data['col2'][i];
+            })).toEqual(new Table({
+                col1: ['a','b','c','d'],
+                col2: ['e','f','g','h'],
+                col3: [1,2,3,4],
+                col4: [5,6,7,8],
+                col5: ['ae','bf','cg','dh']
+            }));
+        });
+        it ("should string concat properly", () => {
+            expect(table.addCol('col5', i => {
+                return table.data['col3'][i] + table.data['col4'][i];
+            })).toEqual(new Table({
+                col1: ['a','b','c','d'],
+                col2: ['e','f','g','h'],
+                col3: [1,2,3,4],
+                col4: [5,6,7,8],
+                col5: [6,8,10,12]
+            }));
+        });
+        it('should throw error if specify no col name', () => {
+            expect(() => {table.addCol()}).toThrow(errorMessage.MISSING_NEW_COL_NAME);
+        });
+        it('should throw error if specify no create function', () => {
+            expect(() => {table.addCol('newCol')}).toThrow(`${errorMessage.MISSING_CREATE_FUNCTION} for col newCol`);
+        });
+    });
+
     describe('asc', () => {
         const table = new Table({
             'name': ['c', null, 'a', 'h', null, 'f', 'g', null, 'h'],

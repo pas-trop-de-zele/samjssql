@@ -13,7 +13,9 @@ const joinType = {
 const errorMessage = {
     MISSING_JOIN_COLUMN: 'Missing joining column',
     EXPLODE_NOT_ARRAY: 'Cannot explode non array column',
-    COL_NOT_EXIST: 'Column does not exist'
+    COL_NOT_EXIST: 'Column does not exist',
+    MISSING_CREATE_FUNCTION: 'Missing create function for new col',
+    MISSING_NEW_COL_NAME: 'Missing new col name'
 }
 
 class Table {
@@ -52,6 +54,21 @@ class Table {
             }
             return ret;
         }, this._getBlankTable()))
+    }
+    
+    addCol(newCol, createFunction) {
+        if (newCol === undefined) {
+            throw new Error(errorMessage.MISSING_NEW_COL_NAME)
+        }
+        if (createFunction === undefined) {
+            throw new Error(`${errorMessage.MISSING_CREATE_FUNCTION} for col ${newCol}`)
+        }
+        let ret = this._deepclone(this.data);
+        ret[newCol] =Array.from({ length: this.rowCount }, (_, i) => i).reduce((rows, i) => {
+            rows.push(createFunction(i))
+            return rows;
+        }, []);
+        return new Table(ret);
     }
 
     groupby(...groupByCols) {
