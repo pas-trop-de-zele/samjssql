@@ -35,6 +35,13 @@ class Table {
         return Object.keys(this.data);
     }
 
+    col(_col) {
+        if (!this.data.hasOwnProperty(_col)) {
+            throw new Error(errorMessage.COL_NOT_EXIST);
+        }
+        return this.data[_col];
+    }
+
     select(...cols) {
         cols = cols.length > 0 ? cols : this.columns;
         return new Table(cols.reduce((ret, col) => {

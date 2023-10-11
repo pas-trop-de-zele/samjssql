@@ -69,6 +69,19 @@ describe('Table Class Unit Tests', () => {
         });
     });
 
+    describe('col', () => {
+        const table = new Table(A);
+        it('return the col', () => {
+            expect(table.col('name')).toEqual(['John', 'Jane', 'Bob', 'Alice']);
+        });
+        it('return the col', () => {
+            expect(table.col('age')).toEqual([25, 30, 40, 35]);
+        });
+        it('throw error for unrecognized column', () => {
+            expect(() => {table.col('non_existent_col')}).toThrow(errorMessage.COL_NOT_EXIST);
+        });
+    });
+
     describe('_getBlankTable', () => {
         it('should return a blank table with the same schema as the current table', () => {
             const tableA = new Table(A);
@@ -267,28 +280,28 @@ describe('Table Class Unit Tests', () => {
         it('should return only rows that satisfies conditions', () => {
             const table = new Table(A);
             expect(table.filter(i => {
-                return table.data['name'][i] === 'John';
+                return table.col('name')[i] === 'John';
             })).toEqual(new Table({
                 name: ['John'],
                 age: [25],
                 occupation: ['Software Engineer']
             }));
             expect(table.filter(i => {
-                return table.data['name'][i] === 'John' && table.data['age'][i] == 30;
+                return table.col('name')[i] === 'John' && table.col('age')[i] == 30;
             })).toEqual(new Table({
                 name: [],
                 age: [],
                 occupation: []
             }));
             expect(table.filter(i => {
-                return table.data['age'][i] > 25;
+                return table.col('age')[i] > 25;
             })).toEqual(new Table({
                 name: ['Jane', 'Bob', 'Alice'],
                 age: [30, 40, 35],
                 occupation: ['Product Manager', 'Marketing Manager', 'Data Scientist']
             }));
             expect(table.filter(i => {
-                return table.data['age'][i] == 35 || table.data['age'][i] == 30
+                return table.col('age')[i] == 35 || table.col('age')[i] == 30
             })).toEqual(new Table({
                 name: ['Jane', 'Alice'],
                 age: [30, 35],
@@ -298,7 +311,7 @@ describe('Table Class Unit Tests', () => {
         it('should return empty rows if no match', () => {
             const table = new Table(A);
             expect(table.filter(i => {
-                return table.data['name'][i] === 'John' && table.data['age'][i] == 30;
+                return table.col('name')[i] === 'John' && table.col('age')[i] == 30;
             })).toEqual(new Table({
                 name: [],
                 age: [],
@@ -324,7 +337,7 @@ describe('Table Class Unit Tests', () => {
         });
         it ("should string concat properly", () => {
             expect(table.addCol('col5', i => {
-                return table.data['col1'][i] + table.data['col2'][i];
+                return table.col('col1')[i] + table.col('col2')[i];
             })).toEqual(new Table({
                 col1: ['a','b','c','d'],
                 col2: ['e','f','g','h'],
@@ -335,7 +348,7 @@ describe('Table Class Unit Tests', () => {
         });
         it ("should string concat properly", () => {
             expect(table.addCol('col5', i => {
-                return table.data['col3'][i] + table.data['col4'][i];
+                return table.col('col3')[i] + table.col('col4')[i];
             })).toEqual(new Table({
                 col1: ['a','b','c','d'],
                 col2: ['e','f','g','h'],
