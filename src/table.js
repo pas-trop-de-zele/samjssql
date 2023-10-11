@@ -141,7 +141,7 @@ class Table {
         }
         let ret = this._getBlankTable();
         for (let i = 0; i < this.rowCount; ++i) {
-            for (let j = 0; j < this.data[explodeCol].length; ++j) {
+            for (let j = 0; j < this.data[explodeCol][i].length; ++j) {
                 for (let col of this._getRemainingCols([explodeCol])) {
                     ret[col].push(this.data[col][i]);
                 }

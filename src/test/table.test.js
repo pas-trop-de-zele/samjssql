@@ -742,6 +742,15 @@ describe('Table Class Unit Tests', () => {
                 col3:[1,2,3,4,5,6,7,8,9]
             }))
         });
+        it('should explode correctly for varied length', () => {
+            expect(new Table({
+                col1: [1,2],
+                col2: [['a','b','c','d'],['e','f']]
+            }).explode('col2')).toEqual(new Table({
+                col1:[1,1,1,1,2,2],
+                col2:['a','b','c','d','e','f']
+            }))
+        });
         it('should keep null when explode', () => {
             expect(new Table({
                 col1: ['a','b', 'c'],
