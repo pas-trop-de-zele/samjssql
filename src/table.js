@@ -19,8 +19,9 @@ const errorMessage = {
 }
 
 class Table {
-    constructor(A) {
+    constructor(A, schema) {
         this.data = A;
+        this.schema = schema;
     }
 
     get colCount() {
@@ -136,11 +137,15 @@ class Table {
     }
     
     explode(explodeCol) {
-        if (!Array.isArray(this.data[explodeCol])) {
+        if (!this._hasCol(explodeCol)) {
+            throw new Error(errorMessage.COL_NOT_EXIST);
+        }
+        if (!this._isArrayCol(explodeCol)) {
             throw new Error(errorMessage.EXPLODE_NOT_ARRAY);
         }
         let ret = this._getBlankTable();
         for (let i = 0; i < this.rowCount; ++i) {
+            if (this.data[explodeCol][i] === null) continue;
             for (let j = 0; j < this.data[explodeCol][i].length; ++j) {
                 for (let col of this._getRemainingCols([explodeCol])) {
                     ret[col].push(this.data[col][i]);
@@ -286,6 +291,10 @@ class Table {
     _getRemainingCols(selectedCols) {
         const selectedColsSet = new Set(selectedCols)
         return this.columns.filter(x => !selectedColsSet.has(x));
+    }
+
+    _isArrayCol(col) {
+        return this.data[col].every(val => Array.isArray(val) || val === null)
     }
 }
 

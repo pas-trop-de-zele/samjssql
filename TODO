@@ -1,0 +1,1 @@
+- _isArrayCol() will returns true if all col is null, this is because if there are array cols with some null they would still be considered as array col. however, if other type col happens to filter to all nulls, then this would also returns true -> it would be better to define the schema of the table ahead of time, so verify that each col is good

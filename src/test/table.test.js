@@ -198,6 +198,31 @@ describe('Table Class Unit Tests', () => {
 
     });
 
+    describe('_isArrayCol', () => {
+        const table = new Table({
+            'col1': [1,2,3],
+            'col2': ['a','b','c'],
+            'col3': [[1,2,3],[1,2,3],[1,2,3]],
+            'col4': [[1,2,3],[1,2,3],null],
+            'col5': [null,null,null]
+        })                          
+        it('number col to returns false', () => {
+            expect(table._isArrayCol('col1')).toEqual(false);
+        })                                     
+        it('string col to returns false', () => {
+            expect(table._isArrayCol('col2')).toEqual(false);
+        })                                     
+        it('array col to returns true', () => {
+            expect(table._isArrayCol('col3')).toEqual(true);
+        })                                     
+        it('array col with null to returns true', () => {
+            expect(table._isArrayCol('col4')).toEqual(true);
+        })                                     
+        it('null col to returns true', () => {
+            expect(table._isArrayCol('col5')).toEqual(true);
+        })                                     
+    });
+
     describe('union', () => {
         it('should return a union table of two tables with the same schema', () => {
             const tableA = new Table(A);
@@ -731,6 +756,13 @@ describe('Table Class Unit Tests', () => {
     })
 
     describe('explode', () => {
+        it('should throw error if explode col does not exist', () => {
+            expect(() => {new Table({
+                col1: ['a','b', 'c'],
+                col2: ['c','d','e'],
+                col3: [[1,2,3], [4,5,6], [7,8,9]]
+            }).explode('non_existent_col')}).toThrow(errorMessage.COL_NOT_EXIST);
+        });
         it('should explode correctly', () => {
             expect(new Table({
                 col1: ['a','b', 'c'],
