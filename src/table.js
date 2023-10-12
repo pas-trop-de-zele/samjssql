@@ -15,6 +15,7 @@ const errorMessage = {
     EXPLODE_NOT_ARRAY: 'Cannot explode non array column',
     COL_NOT_EXIST: 'Column does not exist',
     MISSING_CREATE_FUNCTION: 'Missing create function for new col',
+    MISSING_RENAME_COL: 'Missing rename col',
     MISSING_NEW_COL_NAME: 'Missing new col name'
 }
 
@@ -62,6 +63,22 @@ class Table {
             }
             return ret;
         }, this._getBlankTable()))
+    }
+
+    renameCol(oldCol, newName) {
+        if (oldCol === undefined) {
+            throw new Error(errorMessage.MISSING_RENAME_COL)
+        } 
+        if (!this._hasCol(oldCol)) {
+            throw new Error(errorMessage.COL_NOT_EXIST);
+        }
+        if (newName === undefined) {
+            throw new Error(errorMessage.MISSING_NEW_COL_NAME)
+        }
+        let ret = this._deepclone(this.data)
+        ret[newName] = ret[oldCol]
+        delete ret[oldCol]
+        return new Table(ret);
     }
     
     addCol(newCol, createFunction) {

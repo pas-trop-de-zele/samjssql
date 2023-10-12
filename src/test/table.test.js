@@ -353,6 +353,26 @@ describe('Table Class Unit Tests', () => {
         });
     });
 
+    describe('renameCol', () => {
+        const table = new Table({
+            col1: ['a','b','c','d'],
+        });
+        it ("should rename correctly and delete the old key", () => {
+            expect(table.renameCol('col1', 'col2')).toEqual(new Table({
+                col2: ['a','b','c','d']
+            }));
+        });
+        it('should throw error if rename col does not exist', () => {
+            expect(() => {table.renameCol('col2')}).toThrow(errorMessage.COL_NOT_EXIST);
+        });
+        it('should throw error if specify no rename col', () => {
+            expect(() => {table.renameCol()}).toThrow(errorMessage.MISSING_RENAME_COL);
+        });
+        it('should throw error if specify no new name', () => {
+            expect(() => {table.renameCol('col1')}).toThrow(errorMessage.MISSING_NEW_COL_NAME);
+        });
+    });
+
     describe('addCol', () => {
         const table = new Table({
             col1: ['a','b','c','d'],
